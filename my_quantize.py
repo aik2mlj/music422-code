@@ -44,8 +44,6 @@ def DequantizeUniform(aQuantizedNum, nBits):
     Uniformly dequantizes nBits-long number aQuantizedNum into a signed fraction
     """
 
-    aNum = 0.0  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
     sign = -1 if (aQuantizedNum >> (nBits - 1)) == 1 else 1
     code = aQuantizedNum & ((1 << (nBits - 1)) - 1)
@@ -61,15 +59,22 @@ def vQuantizeUniform(aNumVec, nBits):
     Uniformly quantize vector aNumberVec of signed fractions with nBits
     """
 
-    aQuantizedNumVec = np.zeros_like(
-        aNumVec, dtype=int
-    )  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     # Notes:
     # Make sure to vectorize properly your function as specified in the homework instructions
 
     ### YOUR CODE STARTS HERE ###
+    # Compute the sign bit
+    sign = (aNumVec < 0).astype(int) << (nBits - 1)
 
+    # Compute the magnitude quantization
+    abs_aNumArray = np.abs(aNumVec)
+    code = np.where(
+        abs_aNumArray >= 1,
+        (1 << (nBits - 1)) - 1,  # overload
+        np.floor(((1 << nBits) - 1) * abs_aNumArray / 2 + 0.5).astype(int),
+    )
+
+    aQuantizedNumVec = sign | code
     ### YOUR CODE ENDS HERE ###
 
     return aQuantizedNumVec
@@ -81,11 +86,10 @@ def vDequantizeUniform(aQuantizedNumVec, nBits):
     Uniformly dequantizes vector of nBits-long numbers aQuantizedNumVec into vector of  signed fractions
     """
 
-    aNumVec = np.zeros_like(
-        aQuantizedNumVec, dtype=float
-    )  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    sign = np.where((aQuantizedNumVec >> (nBits - 1)), -1, 1)
+    code = aQuantizedNumVec & ((1 << (nBits - 1)) - 1)
+    aNumVec = sign * 2 * code / ((1 << nBits) - 1)
 
     ### YOUR CODE ENDS HERE ###
 
