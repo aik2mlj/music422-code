@@ -99,15 +99,27 @@ def vDequantizeUniform(aQuantizedNumVec, nBits):
 ### Problem 1.b ###
 def ScaleFactor(aNum, nScaleBits=3, nMantBits=5):
     """
-    Return the floating-point scale factor for a  signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
+    Return the floating-point scale factor for a signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
     """
     # Notes:
     # The scale factor should be the number of leading zeros
 
-    scale = 0  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    # get full quantization
+    nBits = (1 << nScaleBits) - 1 + nMantBits
+    aQuantizedNum = QuantizeUniform(aNum, nBits)
 
+    # compute number of leading zeros
+    testBit = 1 << (nBits - 2)
+    nLeadingZeros = 0
+    while not (aQuantizedNum & testBit) and testBit > 0:
+        nLeadingZeros += 1
+        testBit >>= 1
+
+    if nLeadingZeros < (1 << nScaleBits) - 1:
+        scale = nLeadingZeros
+    else:
+        scale = (1 << nScaleBits) - 1
     ### YOUR CODE ENDS HERE ###
 
     return scale
@@ -116,13 +128,21 @@ def ScaleFactor(aNum, nScaleBits=3, nMantBits=5):
 ### Problem 1.b ###
 def MantissaFP(aNum, scale, nScaleBits=3, nMantBits=5):
     """
-    Return the floating-point mantissa for a  signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
+    Return the floating-point mantissa for a signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
     """
 
-    mantissa = 0  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    # get full quantization
+    maxScale = (1 << nScaleBits) - 1
+    nBits = maxScale + nMantBits
+    aQuantizedNum = QuantizeUniform(aNum, nBits)
 
+    mantissa = (aNum < 0) << (nMantBits - 1)  # sign bit
+    codeBits_getter = (1 << (nMantBits - 1)) - 1
+    if scale == maxScale:
+        mantissa |= aQuantizedNum & codeBits_getter
+    else:
+        mantissa |= (aQuantizedNum >> (maxScale - scale - 1)) & codeBits_getter
     ### YOUR CODE ENDS HERE ###
 
     return mantissa
@@ -131,13 +151,26 @@ def MantissaFP(aNum, scale, nScaleBits=3, nMantBits=5):
 ### Problem 1.b ###
 def DequantizeFP(scale, mantissa, nScaleBits=3, nMantBits=5):
     """
-    Returns a  signed fraction for floating-point scale and mantissa given specified scale and mantissa bits
+    Returns a signed fraction for floating-point scale and mantissa given specified scale and mantissa bits
     """
 
-    aNum = 0.0  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    maxScale = (1 << nScaleBits) - 1
+    nBits = maxScale + nMantBits
+    aQuantizedNum = mantissa >> (nMantBits - 1) << (nBits - 1)  # sign bit
+    codeBits_getter = (1 << (nMantBits - 1)) - 1
+    if scale == maxScale:
+        aQuantizedNum |= mantissa & codeBits_getter
+    else:
+        aQuantizedNum |= (
+            1 << (nBits - 2 - scale)  # leading 1
+            | (mantissa & codeBits_getter) << (nBits - 1 - scale - nMantBits)
+        )
+        if maxScale - scale - 2 >= 0:
+            # guessing bit
+            aQuantizedNum |= 1 << (maxScale - scale - 2)
 
+    aNum = DequantizeUniform(aQuantizedNum, nBits)
     ### YOUR CODE ENDS HERE ###
 
     return aNum

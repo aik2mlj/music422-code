@@ -22,11 +22,11 @@ class TestQuantize(unittest.TestCase):
         ]
     )
 
-    def test_quantizeUniform(self):
+    def test_QuantizeUniform(self):
         for x in self.xs:
             self.assertEqual(QuantizeUniform(x, 12), quantize.QuantizeUniform(x, 12))
 
-    def test_dequantizeUniform(self):
+    def test_DequantizeUniform(self):
         for x in self.xs:
             self.assertEqual(
                 DequantizeUniform(QuantizeUniform(x, 12), 12),
@@ -43,6 +43,27 @@ class TestQuantize(unittest.TestCase):
             vDequantizeUniform(vQuantizeUniform(self.xs, 12), 12),
             quantize.vDequantizeUniform(quantize.vQuantizeUniform(self.xs, 12), 12),
         )
+
+    def test_ScaleFactor(self):
+        for x in self.xs:
+            self.assertEqual(ScaleFactor(x), quantize.ScaleFactor(x))
+
+    def test_MantissaFP(self):
+        for x in self.xs:
+            self.assertEqual(
+                MantissaFP(x, ScaleFactor(x)),
+                quantize.MantissaFP(x, quantize.ScaleFactor(x)),
+            )
+
+    def test_DequantizeFP(self):
+        for x in self.xs:
+            scale = ScaleFactor(x)
+            mantissa = MantissaFP(x, scale)
+            q_scale = quantize.ScaleFactor(x)
+            q_mantissa = quantize.MantissaFP(x, q_scale)
+            result = DequantizeFP(scale, mantissa)
+            q_result = quantize.DequantizeFP(q_scale, q_mantissa)
+            self.assertEqual(result, q_result)
 
 
 if __name__ == "__main__":
