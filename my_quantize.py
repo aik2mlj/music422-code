@@ -11,7 +11,6 @@ between -1.0 and 1.0 ("signed fractions")
 
 ### ADD YOUR CODE AT THE SPECIFIED LOCATIONS ###
 
-import quantize
 import numpy as np
 
 
