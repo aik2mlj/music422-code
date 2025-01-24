@@ -273,5 +273,44 @@ def vDequantize(scale, mantissaVec, nScaleBits=3, nMantBits=5):
 # Testing code
 if __name__ == "__main__":
     ### YOUR TESTING CODE STARTS HERE ###
-    pass
+    xs = np.array(
+        [
+            -0.99,
+            -0.38,
+            -0.10,
+            -0.01,
+            -0.001,
+            0.0,
+            0.05,
+            0.28,
+            0.65,
+            0.97,
+            1.0,
+        ]
+    )
+    print("12 bit binary")
+    for y in vQuantizeUniform(xs, 12):
+        print(f"{y:012b}")
+    print("====================")
+    print("8 bit midread")
+    for y in vDequantizeUniform(vQuantizeUniform(xs, 8), 8):
+        print(f"{y:.5f}")
+    print("====================")
+    print("12 bit midread")
+    for y in vDequantizeUniform(vQuantizeUniform(xs, 12), 12):
+        print(f"{y:.5f}")
+    print("====================")
+    print("3s5m FP")
+    for x in xs:
+        scale = ScaleFactor(x)
+        mantissa = MantissaFP(x, scale)
+        y = DequantizeFP(scale, mantissa)
+        print(f"{y:.5f}")
+    print("====================")
+    print("3s5m BFP N=1")
+    for x in xs:
+        scale = ScaleFactor(x)
+        mantissa = Mantissa(x, scale)
+        y = Dequantize(scale, mantissa)
+        print(f"{y:.5f}")
     ### YOUR TESTING CODE ENDS HERE ###
