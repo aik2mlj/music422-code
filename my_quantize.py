@@ -83,7 +83,7 @@ def vQuantizeUniform(aNumVec, nBits):
 ### Problem 1.a.ii ###
 def vDequantizeUniform(aQuantizedNumVec, nBits):
     """
-    Uniformly dequantizes vector of nBits-long numbers aQuantizedNumVec into vector of  signed fractions
+    Uniformly dequantizes vector of nBits-long numbers aQuantizedNumVec into vector of signed fractions
     """
 
     ### YOUR CODE STARTS HERE ###
@@ -178,7 +178,7 @@ def DequantizeFP(scale, mantissa, nScaleBits=3, nMantBits=5):
 ### Problem 1.c.i ###
 def Mantissa(aNum, scale, nScaleBits=3, nMantBits=5):
     """
-    Return the block floating-point mantissa for a  signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
+    Return the block floating-point mantissa for a signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
     """
 
     ### YOUR CODE STARTS HERE ###
@@ -198,7 +198,7 @@ def Mantissa(aNum, scale, nScaleBits=3, nMantBits=5):
 ### Problem 1.c.i ###
 def Dequantize(scale, mantissa, nScaleBits=3, nMantBits=5):
     """
-    Returns a  signed fraction for block floating-point scale and mantissa given specified scale and mantissa bits
+    Returns a signed fraction for block floating-point scale and mantissa given specified scale and mantissa bits
     """
 
     ### YOUR CODE STARTS HERE ###
@@ -222,15 +222,18 @@ def Dequantize(scale, mantissa, nScaleBits=3, nMantBits=5):
 ### Problem 1.c.ii ###
 def vMantissa(aNumVec, scale, nScaleBits=3, nMantBits=5):
     """
-    Return a vector of block floating-point mantissas for a vector of  signed fractions aNum given nScaleBits scale bits and nMantBits mantissa bits
+    Return a vector of block floating-point mantissas for a vector of signed fractions aNum given nScaleBits scale bits and nMantBits mantissa bits
     """
 
-    mantissaVec = np.zeros_like(
-        aNumVec, dtype=int
-    )  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    # get full quantization
+    maxScale = (1 << nScaleBits) - 1
+    nBits = maxScale + nMantBits
+    aQuantizedNumVec = vQuantizeUniform(aNumVec, nBits)
 
+    mantissaVec = (aNumVec < 0).astype(int) << (nMantBits - 1)
+    codeBits_getter = (1 << (nMantBits - 1)) - 1
+    mantissaVec |= (aQuantizedNumVec >> (maxScale - scale)) & codeBits_getter
     ### YOUR CODE ENDS HERE ###
 
     return mantissaVec
@@ -239,15 +242,27 @@ def vMantissa(aNumVec, scale, nScaleBits=3, nMantBits=5):
 ### Problem 1.c.ii ###
 def vDequantize(scale, mantissaVec, nScaleBits=3, nMantBits=5):
     """
-    Returns a vector of  signed fractions for block floating-point scale and vector of block floating-point mantissas given specified scale and mantissa bits
+    Returns a vector of signed fractions for block floating-point scale and vector of block floating-point mantissas given specified scale and mantissa bits
     """
 
-    aNumVec = np.zeros_like(
-        mantissaVec, dtype=float
-    )  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
-
+    maxScale = (1 << nScaleBits) - 1
+    nBits = maxScale + nMantBits
+    aQuantizedNumVec = mantissaVec >> (nMantBits - 1) << (nBits - 1)  # sign bit
+    codeBits_getter = (1 << (nMantBits - 1)) - 1
+    if scale == maxScale:
+        aQuantizedNumVec |= mantissaVec & codeBits_getter
+    else:
+        aQuantizedNumVec |= (mantissaVec & codeBits_getter) << (
+            nBits - scale - nMantBits
+        )
+        if maxScale - scale - 1 >= 0:
+            aQuantizedNumVec = np.where(
+                mantissaVec & codeBits_getter,
+                aQuantizedNumVec | 1 << (maxScale - scale - 1),
+                aQuantizedNumVec,
+            )
+    aNumVec = vDequantizeUniform(aQuantizedNumVec, nBits)
     ### YOUR CODE ENDS HERE ###
 
     return aNumVec
