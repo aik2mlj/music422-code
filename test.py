@@ -65,6 +65,23 @@ class TestQuantize(unittest.TestCase):
             q_result = quantize.DequantizeFP(q_scale, q_mantissa)
             self.assertEqual(result, q_result)
 
+    def test_Mantissa(self):
+        for x in self.xs:
+            self.assertEqual(
+                Mantissa(x, ScaleFactor(x)),
+                quantize.Mantissa(x, quantize.ScaleFactor(x)),
+            )
+
+    def test_Dequantize(self):
+        for x in self.xs:
+            scale = ScaleFactor(x)
+            mantissa = Mantissa(x, scale)
+            q_scale = quantize.ScaleFactor(x)
+            q_mantissa = quantize.Mantissa(x, q_scale)
+            result = Dequantize(scale, mantissa)
+            q_result = quantize.Dequantize(q_scale, q_mantissa)
+            self.assertEqual(result, q_result)
+
 
 if __name__ == "__main__":
     unittest.main()

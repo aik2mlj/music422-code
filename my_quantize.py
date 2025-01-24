@@ -167,8 +167,7 @@ def DequantizeFP(scale, mantissa, nScaleBits=3, nMantBits=5):
             | (mantissa & codeBits_getter) << (nBits - 1 - scale - nMantBits)
         )
         if maxScale - scale - 2 >= 0:
-            # guessing bit
-            aQuantizedNum |= 1 << (maxScale - scale - 2)
+            aQuantizedNum |= 1 << (maxScale - scale - 2)  # guessing bit
 
     aNum = DequantizeUniform(aQuantizedNum, nBits)
     ### YOUR CODE ENDS HERE ###
@@ -182,10 +181,15 @@ def Mantissa(aNum, scale, nScaleBits=3, nMantBits=5):
     Return the block floating-point mantissa for a  signed fraction aNum given nScaleBits scale bits and nMantBits mantissa bits
     """
 
-    mantissa = 0  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    # get full quantization
+    maxScale = (1 << nScaleBits) - 1
+    nBits = maxScale + nMantBits
+    aQuantizedNum = QuantizeUniform(aNum, nBits)
 
+    mantissa = (aNum < 0) << (nMantBits - 1)  # sign bit
+    codeBits_getter = (1 << (nMantBits - 1)) - 1
+    mantissa |= (aQuantizedNum >> (maxScale - scale)) & codeBits_getter
     ### YOUR CODE ENDS HERE ###
 
     return mantissa
@@ -197,10 +201,19 @@ def Dequantize(scale, mantissa, nScaleBits=3, nMantBits=5):
     Returns a  signed fraction for block floating-point scale and mantissa given specified scale and mantissa bits
     """
 
-    aNum = 0.0  # REMOVE THIS LINE WHEN YOUR FUNCTION IS DONE
-
     ### YOUR CODE STARTS HERE ###
+    maxScale = (1 << nScaleBits) - 1
+    nBits = maxScale + nMantBits
+    aQuantizedNum = mantissa >> (nMantBits - 1) << (nBits - 1)  # sign bit
+    codeBits_getter = (1 << (nMantBits - 1)) - 1
+    if scale == maxScale:
+        aQuantizedNum |= mantissa & codeBits_getter
+    else:
+        aQuantizedNum |= (mantissa & codeBits_getter) << (nBits - scale - nMantBits)
+        if maxScale - scale - 1 >= 0 and (mantissa & codeBits_getter):
+            aQuantizedNum |= 1 << (maxScale - scale - 1)  # guessing bit
 
+    aNum = DequantizeUniform(aQuantizedNum, nBits)
     ### YOUR CODE ENDS HERE ###
 
     return aNum
