@@ -1,0 +1,161 @@
+"FOREWORD" 12
+"PREFACE" 15
+"PART I: AUDIO CODING METHODS" 21
+"Chapter I. INTRODUCTION" 22
+    "1. Representation of Audio Signals" 22
+    "2. Whatis a Digital Audio Coder?" 23
+    "3. Audio Coding Goals" 24
+    "4. The Simplest Coder - PCM" 26
+    "5. The Compact Disk" 27
+    "6. Potential Coding Errors" 28
+    "7. A More Complex Coder" 29
+    "8. References" 31
+    "9. Exercises" 31
+"Chapter 2. QUANTIZATION" 32
+    "1. Introduction" 32
+    "2. Binary Numbers" 33
+    "3. Quantization" 39
+    "4. Quantization Errors" 53
+    "5. Entropy Coding" 57
+    "6. Summary" 62
+    "7. References" 63
+    "8. Exercises" 63
+"Chapter 3. REPRESENTATION OF AUDIO SIGNALS" 66
+    "1. Introduction" 66
+    "2. Notation" 67
+    "3. Dirac Delta" 68
+    "4. The Fourier Transform" 70
+    "5. Summary Properties of Audio Signals" 72
+    "6. The Fourier Series" 78
+    "7. The Sampling Theorem" 80
+    "8. Prediction" 82
+    "9. Summary" 87
+    "10. Appendix - Exact Reconstruction of a Band-Limited, Periodic Signal from Samples within One Period" 87
+    "11. References" 88
+    "12. Exercises" 89
+"Chapter 4. TIME TO FREQUENCY MAPPING PART I: THE PQMF" 93
+    "1. Introduction" 93
+    "2. The Z Transform" 95
+    "3. Two-Channel Perfect Reconstruction Filter Banks" 102
+    "4. The Pseudo-QMF Filter Bank, PQMF" 108
+    "5. Summary" 117
+    "6. References" 118
+    "7. Exercises" 119
+"Chapter 5. TIME TO FREQUENCY MAPPING PART II: THE MDCT" 121
+    "1. Introduction" 121
+    "2. The Discrete Fourier Transform" 122
+    "3. The Overlap-and-Add Technique" 131
+    "4. The Modified Discrete Cosine Transform, MDCT" 142
+    "5. Summary" 161
+    "6. References" 162
+    "7. Exercises" 164
+"Chapter 6. INTRODUCTION TO PSYCHOACOUSTICS" 166
+    "1. Introduction" 166
+    "2. Sound Pressure Levels" 167
+    "3. Loudness" 167
+    "4. Hearing Range" 168
+    "5. Hearing Threshold" 170
+    "6. The Masking Phenomenon" 173
+    "7. Measuring Masking Curves" 177
+    "8. Critical Bandwidths" 181
+    "9. How Hearing Works" 185
+    "10. Summary" 191
+    "11. References" 192
+    "12. Exercises" 194
+"Chapter 7. PSYCHOACOUSTIC MODELS FOR AUDIO CODING" 195
+    "1. Introduction" 195
+    "2. Excitation Patterns and Masking Models" 196
+    "3. The Bark Scale" 198
+    "4. Models for the Spreading of Masking" 199
+    "5. Masking Curves" 206
+    "6. “Addition” of Masking" 208
+    "7. Modeling the Effects of Non-Simultaneous (Temporal) Masking" 211
+    "8. Perceptual Entropy" 212
+    "9. Masked Thresholds and Allocation of the Bit Pool" 213
+    "10. Summary" 214
+    "11. References" 214
+    "12. Exercises" 216
+"Chapter 8. BIT ALLOCATION STRATEGIES" 217
+    "1. Introduction" 217
+    "2. Coding Data Rates" 218
+    "3. A Simple Allocation of the Bit Pool" 220
+    "4. Optimal Bit Allocation" 221
+    "5. Time-Domain Distortion" 230
+    "6. Optimal Bit Allocation and Perceptual Models" 232
+    "7. Summary" 234
+    "8. References" 235
+    "9. Exercises" 235
+"Chapter 9. BUILDING A PERCEPTUAL AUDIO CODER" 237
+    "1. Introduction" 237
+    "2. Overview of the Coder Building Blocks" 237
+    "3. Computing Masking Curves" 239
+    "4. Bitstream Format." 246
+    "5. Business Models and Coding Secrets" 249
+    "6. References" 251
+    "7. Exercises" 251
+"Chapter 10. QUALITY MEASUREMENT OF PERCEPTUAL AUDIO CODECS" 252
+    "1. Introduction" 252
+    "2. Audio Quality" 254
+    "3. Systems with Small Impairments" 255
+    "4. Objective Perceptual Measurements of Audio Quality" 266
+    "5. What Are We Listening For?" 270
+    "6. Summary" 272
+    "7. References" 272
+    "8. Exercises" 276
+"PART II: AUDIO CODING STANDARDS" 277
+"Chapter 11. MPEG-l AUDIO" 278
+    "1. Introduction" 278
+    "2. Brief History of MPEG Standards" 279
+    "3. MPEG-l Audio" 281
+    "4. Time to Frequency Mapping" 286
+    "5. MPEG Audio Psychoacoustic Models" 291
+    "6. MPEG-l Audio Syntax" 309
+    "7. Stereo Coding" 320
+    "8. Summary" 323
+    "9. References" 323
+"Chapter 12. MPEG-2 AUDIO" 327
+    "1. Introduction" 327
+    "2. MPEG-2 LSF, “MPEG-2.5” and MP3" 327
+    "3. Introduction to Multichannel Audio" 330
+    "4. MPEG-2 Multichannel BC." 333
+    "5. Summary" 342
+    "6. References" 342
+"Chapter 13. MPEG-2 AAC" 345
+    "1. Introduction" 345
+    "2. Overview" 345
+    "3. Gain Control" 350
+    "4. Filter Bank" 352
+    "5. Prediction" 355
+    "6. Quantization and Coding" 358
+    "7. Noiseless Coding" 362
+    "8. Bitstream Multiplexing" 365
+    "9. Temporal Noise Shaping" 367
+    "10. Joint Stereo Coding" 370
+    "11. Test Results" 371
+    "12. Decoder Complexity Evaluation" 375
+    "13. Summary" 379
+    "14. References" 379
+"Chapter 14. DOLBY AC-3" 382
+    "1. Introduction" 382
+    "2. Main Features" 383
+    "3. Overview of the Encoding process" 385
+    "4. Filter Bank" 388
+    "5. Spectral Envelope Coding" 393
+    "6. Multichannel Coding" 396
+    "7. Bit Allocation" 401
+    "8. Quantization" 405
+    "9. Bitstream Syntax" 406
+    "10. Performance" 407
+    "11. Summary" 408
+    "12. References" 409
+"Chapter 15. MPEG-4 AUDIO" 412
+    "1. Introduction" 412
+    "2. MPEG-4: What is it?" 413
+    "3. MPEG-4 Audio Goals and Functionalities" 416
+    "4. MPEG-4 Audio Tools and Profiles" 419
+    "5. MPEG-1 and 2 Versus MPEG-4 Audio" 433
+    "6. The Performance of the MPEG-4 Audio Coding Tools" 435
+    "7. Intellectual Property and MPEG-4" 436
+    "8. Summary" 437
+    "9. References" 437
+"INDEX" 442
