@@ -170,7 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-assets/
+# assets/
 *.pdf
 audio/
 *.wav
