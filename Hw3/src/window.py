@@ -14,7 +14,7 @@ window.py -- Defines functions to window an array of discrete-time data samples
 ### ADD YOUR CODE AT THE SPECIFIED LOCATIONS ###
 
 import numpy as np
-from scipy.special import i0
+import scipy
 
 
 ### Problem 1.d ###
@@ -60,14 +60,14 @@ def KBDWindow(dataSampleArray, alpha=4.0):
     numerator = (
         np.pi
         * alpha
-        * np.sqrt(1.0 - np.pow((2 * np.arange(N_half) + 1) / (N_half + 1) - 1, 2))
+        * np.sqrt(1.0 - np.pow((2 * np.arange(N_half + 1)) / (N_half + 1) - 1, 2))
     )
-    numerator = i0(numerator)
-    denominator = i0(np.pi * alpha)
+    numerator = scipy.special.i0(numerator)
+    denominator = scipy.special.i0(np.pi * alpha)
     w_kb = numerator / denominator
     w_kb_cumsum = np.cumsum(w_kb)
     w_kbd_half = np.sqrt(w_kb_cumsum[:-1] / w_kb_cumsum[-1])
-    w_kbd = np.concat(w_kbd_half, np.flip(w_kbd_half))
+    w_kbd = np.concat((w_kbd_half, np.flip(w_kbd_half)))
     return w_kbd * dataSampleArray
     ### YOUR CODE ENDS HERE ###
 
@@ -77,7 +77,6 @@ def KBDWindow(dataSampleArray, alpha=4.0):
 # Testing code
 if __name__ == "__main__":
     ### YOUR TESTING CODE STARTS HERE ###
-
-    pass  # THIS DOES NOTHING
-
+    # see plots.ipynb for 1.f)
+    pass
     ### YOUR TESTING CODE ENDS HERE ###

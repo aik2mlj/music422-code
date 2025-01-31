@@ -37,4 +37,23 @@ The execution time of slow/FFT MDCT/IMDCT functions are:
 - FFT IMDCT: 0.00029606300086015835
 Average speedup ratio: 127.50094091703055
 
+#counter(heading).step(level: 2)
+#counter(heading).step(level: 2)
+==
 
+#figure(
+  image("assets/1f-1.png", width: 60%),
+  caption: [Windows in the time domain.],
+) <fig-1f-1>
+
+
+#figure(
+  image("assets/1f-2.png", width: 60%),
+  caption: [SPL with different windows and transforms.],
+) <fig-1f-2>
+
+=== Does anything in this graph explain why we choose to use an FFT to do peak detection in the psychoacoustic model stage instead of the MDCT?
+This graph clearly shows that FFT has a much steeper curve, i.e., better frequency separation performance than MDCT given the same Sine window. Therefore, FFT is preferred than MDCT in peak detection of the psychoacoustic model.
+
+=== Does anything explain why a Hanning window is often used for FFT analysis in the psychoacoustic stage instead of a Sine window?
+The graph shows that the Hanning window achieves a steeper curve, i.e., better frequency separation performance than the Sine window with FFT. Therefore, Hanning window is preferred than Sine window in the FFT analysis of the psychoacoustic model.
