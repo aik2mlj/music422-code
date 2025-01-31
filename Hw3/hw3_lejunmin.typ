@@ -57,3 +57,22 @@ This graph clearly shows that FFT has a much steeper curve, i.e., better frequen
 
 === Does anything explain why a Hanning window is often used for FFT analysis in the psychoacoustic stage instead of a Sine window?
 The graph shows that the Hanning window achieves a steeper curve, i.e., better frequency separation performance than the Sine window with FFT. Therefore, Hanning window is preferred than Sine window in the FFT analysis of the psychoacoustic model.
+
+=
+#counter(heading).step(level: 2)
+#counter(heading).step(level: 2)
+#counter(heading).step(level: 2)
+==
+=== Describe the quantization noise you hear for each quantization and block size.
+I tested the coding with `spfe.wav` and `oboe.wav`.
+
+- The quantization noise is much *worse* using _uniform quantization_ than using _floating point quantization_ in any scenario. I suppose this is due to the fact that in this implementation, we move a factor of $2/N$ from the inverse transform to the forward transform, making the absolute level of the MDCT-transformed frequency signals low. Therefore, _uniform quantization_ really struggles to record the low-level frequency information, while _floating point quantization_ performs better with its adaptive adjustment.
+
+- For speech recordings, the quantization noise is more noticeable with larger block size. Since the signals are more transient, smaller block size captures more instantaneous information that are crucial for speech reconstruction. However, for instrumental recordings, larger block size seems to perform better with clearer harmonics captured. This is due to the fact that larger block size achieves better frequency-domain resolution.
+
+=== Difference between time-domain and frequency-domain quantization noise
+They do have very different characteristics.
+
+- The time-domain quantization noise approximates the impression of a white noise that is universally chaotic in its frequency components. This is due to that the quantization is on the signal level, which treats the frequency components universally bad. The noise does not pose some filtering effect on the original signal. Also, the noise does not contain adjacent signal information (no time aliasing).
+
+- The frequency-domain quantization noise is more harmonic, closely related to the harmonic components of the signal. The noise poses a filtering effect (low-pass, band-pass like) on the original signal, making it sound muffled. Also, the noise contain adjacent signal information (time aliasing), which sounds like a reverberation or a comb filter sometimes.
