@@ -29,4 +29,12 @@ Append 4 zeros for the last block of samples before feeding into MDCT/IMDCT.
 === Is there any delay in your output signal? How much?
 Yes. There is a delay of 4 data samples.
 
+==
+The execution time of slow/FFT MDCT/IMDCT functions are:
+- Slow MDCT: 0.037722503002441954
+- FFT MDCT: 0.00025083799846470356
+- Slow IMDCT: 0.032007888999942224
+- FFT IMDCT: 0.00029606300086015835
+Average speedup ratio: 127.50094091703055
+
 
