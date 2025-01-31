@@ -12,6 +12,7 @@ from quantize import (
     vQuantizeUniform,
 )
 from window import SineWindow
+from mdct import MDCT, IMDCT
 
 
 def uniform_quantize(inFile, codingParams):
@@ -94,8 +95,8 @@ def blockFloatPoint_quantize(inFile, codingParams):
         outFile.Close(codingParams)
 
 
-def overlap_add(inFile, codingParams):
-    # 2.a)
+def overlap_add(inFile, codingParams, use_mdct=True, quant_type=None):
+    # 2.a, 2.b, 2.c
     outFile_uq = PCMFile("../audio/overlap_add.wav")
     outFile_uq.OpenForWriting(codingParams)
 
@@ -109,19 +110,35 @@ def overlap_add(inFile, codingParams):
             break  # we hit the end of the input file
         for iCh in range(codingParams.nChannels):
             # data[iCh]: (1024,)
-            # a. concatenate the current data block with priorBlock (save the current block)
+            # 2.a) a. concatenate the current data block with priorBlock (save the current block)
             data_concat = np.concat((priorBlock[iCh], data[iCh]))  # (2048,)
             priorBlock[iCh] = data[iCh]
-            # b. window this concatenated block with a Sine window
+            # 2.a) b. window this concatenated block with a Sine window
             data_windowed = SineWindow(data_concat)
-            # c. window again
-            data_rewindowed = SineWindow(data_windowed)
-            # d. add the left half to overlapAndAdd (save the right half)
+
+            # 2.b) MDCT & IMDCT
+            if use_mdct:
+                data_tranformed = MDCT(
+                    data_windowed,
+                    codingParams.nSamplesPerBlock,
+                    codingParams.nSamplesPerBlock,
+                )
+                data_prime = IMDCT(
+                    data_tranformed,
+                    codingParams.nSamplesPerBlock,
+                    codingParams.nSamplesPerBlock,
+                )
+            else:
+                data_prime = data_windowed
+
+            # 2.a) c. window again
+            data_rewindowed = SineWindow(data_prime)
+            # 2.a) d. add the left half to overlapAndAdd (save the right half)
             result = (
                 overlapAndAdd[iCh] + data_rewindowed[: codingParams.nSamplesPerBlock]
             )
             overlapAndAdd[iCh] = data_rewindowed[codingParams.nSamplesPerBlock :]
-            # e. set data to the result
+            # 2.a) e. set data to the result
             data[iCh] = result
 
         outFile_uq.WriteDataBlock(data, codingParams)
