@@ -14,6 +14,7 @@ window.py -- Defines functions to window an array of discrete-time data samples
 ### ADD YOUR CODE AT THE SPECIFIED LOCATIONS ###
 
 import numpy as np
+from scipy.special import i0
 
 
 ### Problem 1.d ###
@@ -25,8 +26,9 @@ def SineWindow(dataSampleArray):
     """
 
     ### YOUR CODE STARTS HERE ###
-
-    return np.zeros_like(dataSampleArray)  # CHANGE THIS
+    N = len(dataSampleArray)
+    w = np.sin(np.pi * (np.arange(N) + 0.5) / N)
+    return w * dataSampleArray
     ### YOUR CODE ENDS HERE ###
 
 
@@ -38,8 +40,9 @@ def HanningWindow(dataSampleArray):
     """
 
     ### YOUR CODE STARTS HERE ###
-
-    return np.zeros_like(dataSampleArray)  # CHANGE THIS
+    N = len(dataSampleArray)
+    w = 0.5 * (1 - np.cos(2 * np.pi * (np.arange(N) + 0.5) / N))
+    return w * dataSampleArray
     ### YOUR CODE ENDS HERE ###
 
 
@@ -52,8 +55,20 @@ def KBDWindow(dataSampleArray, alpha=4.0):
     """
 
     ### YOUR CODE STARTS HERE ###
-
-    return np.zeros_like(dataSampleArray)  # CHANGE THIS
+    N = len(dataSampleArray)
+    N_half = N // 2
+    numerator = (
+        np.pi
+        * alpha
+        * np.sqrt(1.0 - np.pow((2 * np.arange(N_half) + 1) / (N_half + 1) - 1, 2))
+    )
+    numerator = i0(numerator)
+    denominator = i0(np.pi * alpha)
+    w_kb = numerator / denominator
+    w_kb_cumsum = np.cumsum(w_kb)
+    w_kbd_half = np.sqrt(w_kb_cumsum[:-1] / w_kb_cumsum[-1])
+    w_kbd = np.concat(w_kbd_half, np.flip(w_kbd_half))
+    return w_kbd * dataSampleArray
     ### YOUR CODE ENDS HERE ###
 
 
