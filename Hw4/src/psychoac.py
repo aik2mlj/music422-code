@@ -14,14 +14,14 @@ def SPL(intensity):
     """
     Returns the SPL corresponding to intensity
     """
-    return np.zeros_like(intensity)  # TO REPLACE WITH YOUR CODE
+    return np.maximum(96 + 10.0 * np.log10(intensity), -30.0)
 
 
 def Intensity(spl):
     """
-    Returns the intensity  for SPL spl
+    Returns the intensity for SPL spl
     """
-    return np.zeros_like(spl)  # TO REPLACE WITH YOUR CODE
+    return np.power(10, (spl - 96) / 10.0)
 
 
 def Thresh(f):
