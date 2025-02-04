@@ -9,26 +9,31 @@ psychoac.py -- masking models implementation
 import numpy as np
 from window import *
 
+
 def SPL(intensity):
     """
-    Returns the SPL corresponding to intensity 
+    Returns the SPL corresponding to intensity
     """
-    return np.zeros_like(intensity) # TO REPLACE WITH YOUR CODE
+    return np.zeros_like(intensity)  # TO REPLACE WITH YOUR CODE
+
 
 def Intensity(spl):
     """
     Returns the intensity  for SPL spl
     """
-    return np.zeros_like(spl) # TO REPLACE WITH YOUR CODE
+    return np.zeros_like(spl)  # TO REPLACE WITH YOUR CODE
+
 
 def Thresh(f):
     """Returns the threshold in quiet measured in SPL at frequency f (in Hz)"""
 
-    return np.zeros_like(f) # TO REPLACE WITH YOUR CODE
+    return np.zeros_like(f)  # TO REPLACE WITH YOUR CODE
+
 
 def Bark(f):
-    """Returns the bark-scale frequency for input frequency f (in Hz) """
-    return np.zeros_like(f) # TO REPLACE WITH YOUR CODE
+    """Returns the bark-scale frequency for input frequency f (in Hz)"""
+    return np.zeros_like(f)  # TO REPLACE WITH YOUR CODE
+
 
 class Masker:
     """
@@ -36,37 +41,39 @@ class Masker:
     masker frequency
     """
 
-    def __init__(self,f,SPL,isTonal=True):
+    def __init__(self, f, SPL, isTonal=True):
         """
         initialized with the frequency and SPL of a masker and whether or not
         it is Tonal
         """
-        pass # TO REPLACE WITH YOUR CODE
+        pass  # TO REPLACE WITH YOUR CODE
 
-    def IntensityAtFreq(self,freq):
+    def IntensityAtFreq(self, freq):
         """The intensity at frequency freq"""
-        return 0 # TO REPLACE WITH YOUR CODE
+        return 0  # TO REPLACE WITH YOUR CODE
 
-    def IntensityAtBark(self,z):
+    def IntensityAtBark(self, z):
         """The intensity at Bark location z"""
-        return 0 # TO REPLACE WITH YOUR CODE
+        return 0  # TO REPLACE WITH YOUR CODE
 
-    def vIntensityAtBark(self,zVec):
+    def vIntensityAtBark(self, zVec):
         """The intensity at vector of Bark locations zVec"""
-        return np.zeros_like(zVec) # TO REPLACE WITH YOUR CODE
+        return np.zeros_like(zVec)  # TO REPLACE WITH YOUR CODE
 
 
 # Default data for 25 scale factor bands based on the traditional 25 critical bands
 cbFreqLimits = []  # TO REPLACE WITH THE APPROPRIATE VALUES
 
-def AssignMDCTLinesFromFreqLimits(nMDCTLines, sampleRate, flimit = cbFreqLimits):
+
+def AssignMDCTLinesFromFreqLimits(nMDCTLines, sampleRate, flimit=cbFreqLimits):
     """
     Assigns MDCT lines to scale factor bands for given sample rate and number
     of MDCT lines using predefined frequency band cutoffs passed as an array
     in flimit (in units of Hz). If flimit isn't passed it uses the traditional
     25 Zwicker & Fastl critical bands as scale factor bands.
     """
-    return np.zeros(len(flimit), dtype = np.int) # TO REPLACE WITH YOUR CODE
+    return np.zeros(len(flimit), dtype=np.int)  # TO REPLACE WITH YOUR CODE
+
 
 class ScaleFactorBands:
     """
@@ -78,12 +85,12 @@ class ScaleFactorBands:
     and the number of lines in each band nLines[i in range(nBands)]
     """
 
-    def __init__(self,nLines):
+    def __init__(self, nLines):
         """
         Assigns MDCT lines to scale factor bands based on a vector of the number
         of lines in each band
         """
-        pass # TO REPLACE WITH YOUR CODE
+        pass  # TO REPLACE WITH YOUR CODE
 
 
 def getMaskedThreshold(data, MDCTdata, MDCTscale, sampleRate, sfBands):
@@ -93,7 +100,7 @@ def getMaskedThreshold(data, MDCTdata, MDCTscale, sampleRate, sfBands):
     Used by CalcSMR, but can also be called from outside this module, which may
     be helpful when debugging the bit allocation code.
     """
-    return np.zeros_like(0) # TO REPLACE WITH YOUR CODE
+    return np.zeros_like(0)  # TO REPLACE WITH YOUR CODE
 
 
 def CalcSMRs(data, MDCTdata, MDCTscale, sampleRate, sfBands):
@@ -118,15 +125,15 @@ def CalcSMRs(data, MDCTdata, MDCTscale, sampleRate, sfBands):
     Logic:
                 Performs an FFT of data[N] and identifies tonal and noise maskers.
                 Combines their relative masking curves and the hearing threshold
-                to calculate the overall masked threshold at the MDCT frequency locations. 
-				Then determines the maximum signal-to-mask ratio within
+                to calculate the overall masked threshold at the MDCT frequency locations.
+                                Then determines the maximum signal-to-mask ratio within
                 each critical band and returns that result in the SMR[] array.
     """
-    return np.zeros_like(0) # TO REPLACE WITH YOUR CODE
+    return np.zeros_like(0)  # TO REPLACE WITH YOUR CODE
 
-#-----------------------------------------------------------------------------
 
-#Testing code
+# -----------------------------------------------------------------------------
+
+# Testing code
 if __name__ == "__main__":
-
-    pass # TO REPLACE WITH YOUR CODE
+    pass  # TO REPLACE WITH YOUR CODE
