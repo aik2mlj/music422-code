@@ -43,3 +43,11 @@ The code for the plot and the table is in `plots.ipynb`.
 
 From the table, we can see that block size $N$ influences the peaks detected. The larger the block size, the better and more accurate the peaks are detected. With $N=512$, only 5 peaks are detected, and the first two aren't correct. With $N=1024$, all 6 peaks are detected but with some minor discrepancy. With $N=2048$, all 6 peaks are detected and accurately align with the answer.
 
+==
+
+#figure(
+  image("assets/1c.png", width: 80%),
+  caption: [The SPL curve of the threshold in quiet and the signal in 1.b.],
+) <fig-1c>
+
+

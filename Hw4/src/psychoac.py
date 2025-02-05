@@ -14,6 +14,7 @@ def SPL(intensity):
     """
     Returns the SPL corresponding to intensity
     """
+    # This does not take care of the 2/N in MDCT
     return np.maximum(96 + 10.0 * np.log10(intensity), -30.0)
 
 
@@ -21,13 +22,20 @@ def Intensity(spl):
     """
     Returns the intensity for SPL spl
     """
+    # This does not take care of the 2/N in MDCT
     return np.power(10, (spl - 96) / 10.0)
 
 
 def Thresh(f):
     """Returns the threshold in quiet measured in SPL at frequency f (in Hz)"""
 
-    return np.zeros_like(f)  # TO REPLACE WITH YOUR CODE
+    f_floored = np.maximum(f, 20.0)
+    f_khz = f_floored / 1000.0
+    return (
+        3.64 * np.pow(f_khz, -0.8)
+        - 6.5 * np.exp(-0.6 * np.pow(f_khz - 3.3, 2))
+        + 0.001 * np.pow(f_khz, 4)
+    )
 
 
 def Bark(f):
