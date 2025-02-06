@@ -40,7 +40,8 @@ def Thresh(f):
 
 def Bark(f):
     """Returns the bark-scale frequency for input frequency f (in Hz)"""
-    return np.zeros_like(f)  # TO REPLACE WITH YOUR CODE
+    f_khz = np.array(f) / 1000.0
+    return 13 * np.arctan(0.76 * f_khz) + 3.5 * np.arctan(np.pow(f_khz / 7.5, 2))
 
 
 class Masker:
@@ -144,4 +145,8 @@ def CalcSMRs(data, MDCTdata, MDCTscale, sampleRate, sfBands):
 
 # Testing code
 if __name__ == "__main__":
-    pass  # TO REPLACE WITH YOUR CODE
+    # 1.d)
+    fls = [0, 100, 200, 300, 400, 510, 630, 770, 920, 1080, 1270, 1480,
+           1720, 2000, 2320, 2700, 3150, 3700, 4400, 5300, 6400, 7700, 9500, 12000]  # fmt: skip
+    np.set_printoptions(precision=3)
+    print(Bark(fls))
