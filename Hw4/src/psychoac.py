@@ -94,7 +94,8 @@ class Masker:
 
 
 # Default data for 25 scale factor bands based on the traditional 25 critical bands
-cbFreqLimits = []  # TO REPLACE WITH THE APPROPRIATE VALUES
+cbFreqLimits = [100, 200, 300, 400, 510, 630, 770, 920, 1080, 1270, 1480,
+           1720, 2000, 2320, 2700, 3150, 3700, 4400, 5300, 6400, 7700, 9500, 12000, 15500]  # fmt: skip
 
 
 def AssignMDCTLinesFromFreqLimits(nMDCTLines, sampleRate, flimit=cbFreqLimits):
@@ -104,7 +105,10 @@ def AssignMDCTLinesFromFreqLimits(nMDCTLines, sampleRate, flimit=cbFreqLimits):
     in flimit (in units of Hz). If flimit isn't passed it uses the traditional
     25 Zwicker & Fastl critical bands as scale factor bands.
     """
-    return np.zeros(len(flimit), dtype=np.int)  # TO REPLACE WITH YOUR CODE
+    freqVec = np.arange(nMDCTLines) * sampleRate / (2 * nMDCTLines)
+    indices = np.searchsorted(flimit, freqVec, side="right")  # left-close, right-open
+    counts = np.bincount(indices, minlength=len(flimit) + 1)
+    return counts
 
 
 class ScaleFactorBands:
@@ -121,8 +125,13 @@ class ScaleFactorBands:
         """
         Assigns MDCT lines to scale factor bands based on a vector of the number
         of lines in each band
+        nlines: return value of AssignMDCTLinesFromFreqLimits
         """
-        pass  # TO REPLACE WITH YOUR CODE
+        self.nBands = len(nLines)
+        self.lowerLine = np.concat(([0], np.cumsum(nLines)[:-1]))
+        self.upperLine = np.cumsum(nLines) - 1
+        self.nLines = nLines
+        assert (self.nLines == self.upperLine - self.lowerLine + 1).any()
 
 
 def getMaskedThreshold(data, MDCTdata, MDCTscale, sampleRate, sfBands):
@@ -173,3 +182,13 @@ if __name__ == "__main__":
            1720, 2000, 2320, 2700, 3150, 3700, 4400, 5300, 6400, 7700, 9500, 12000]  # fmt: skip
     np.set_printoptions(precision=3)
     print(Bark(fls))
+
+    # 1.f)
+    nMDCTLines = 512
+    sampleRate = 48000
+    nLines = AssignMDCTLinesFromFreqLimits(nMDCTLines, sampleRate)
+    scaleFactorBands = ScaleFactorBands(nLines)
+    print("nBands =", scaleFactorBands.nBands)
+    print("lowerLine =", scaleFactorBands.lowerLine)
+    print("upperLine =", scaleFactorBands.upperLine)
+    print("nLines =", scaleFactorBands.nLines)

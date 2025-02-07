@@ -70,3 +70,14 @@ The obtained values using Bark formula basically match the $z$ as shown in Table
 In the implementation, I used $alpha=oo$ for the addition of masking (calculating the maximum value across all the masking thresholds and the threshold in quiet).
 
 For all the critical bands (centers at 226, 322, 419, 880, 4400, 8800 Hz), the signal SPL exceeds the masked threshold somewhere in that band.
+
+==
+In the `ScaleFactorBands` object,
+- `nBands = 25`
+- `lowerLine = [  0   3   5   7   9  11  14  17  20  24  28  32  37  43  50  58  68  79
+  94 114 137 165 203 256 331]`
+- `upperLine = [  2   4   6   8  10  13  16  19  23  27  31  36  42  49  57  67  78  93
+ 113 136 164 202 255 330 511]`
+- `nLines = [  3   2   2   2   2   3   3   3   4   4   4   5   6   7   8  10  11  15
+  20  23  28  38  53  75 181]`
+
