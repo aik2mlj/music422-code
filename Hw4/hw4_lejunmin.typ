@@ -60,3 +60,13 @@ The obtained Bark values are:
 
 The obtained values using Bark formula basically match the $z$ as shown in Table 1 on pp. 182-3, though not perfectly.
 
+==
+
+#figure(
+  image("assets/1e.png", width: 80%),
+  caption: [The signal, threshold in quiet, masking curves, critical band boundaries, and masked threshold.],
+) <fig-1e>
+
+In the implementation, I used $alpha=oo$ for the addition of masking (calculating the maximum value across all the masking thresholds and the threshold in quiet).
+
+For all the critical bands (centers at 226, 322, 419, 880, 4400, 8800 Hz), the signal SPL exceeds the masked threshold somewhere in that band.

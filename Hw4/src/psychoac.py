@@ -55,19 +55,42 @@ class Masker:
         initialized with the frequency and SPL of a masker and whether or not
         it is Tonal
         """
-        pass  # TO REPLACE WITH YOUR CODE
+        self.f = f
+        self.z = Bark(f)
+        self.spl = SPL
+        self.isTonal = isTonal
+        self.delta = 16 if isTonal else 6
 
     def IntensityAtFreq(self, freq):
         """The intensity at frequency freq"""
-        return 0  # TO REPLACE WITH YOUR CODE
+        return self.IntensityAtBark(Bark(freq))
+
+    def vIntensityAtFreq(self, freqVec):
+        """The intensity at frequency freq"""
+        return self.vIntensityAtBark(Bark(freqVec))
 
     def IntensityAtBark(self, z):
         """The intensity at Bark location z"""
-        return 0  # TO REPLACE WITH YOUR CODE
+        spl = self.spl - self.delta
+        dz = z - self.z
+        if dz < -0.5:
+            spl += -27 * (abs(dz) - 0.5)
+        elif dz > 0.5:
+            spl += (-27 + 0.367 * max(self.spl - 40.0, 0.0)) * (abs(dz) - 0.5)
+        return Intensity(spl)
 
     def vIntensityAtBark(self, zVec):
         """The intensity at vector of Bark locations zVec"""
-        return np.zeros_like(zVec)  # TO REPLACE WITH YOUR CODE
+        splVec = np.zeros_like(zVec)
+        splVec += self.spl - self.delta
+        dzVec = zVec - self.z
+        splVec += np.where(dzVec < -0.5, -27 * (np.abs(dzVec) - 0.5), 0)
+        splVec += np.where(
+            dzVec > 0.5,
+            (-27 + 0.367 * max(self.spl - 40.0, 0.0)) * (np.abs(dzVec) - 0.5),
+            0,
+        )
+        return Intensity(splVec)
 
 
 # Default data for 25 scale factor bands based on the traditional 25 critical bands
