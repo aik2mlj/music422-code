@@ -122,6 +122,7 @@ class PackedBits:
         if nCur > nBits:
             nCur = nBits
         # compute mask to extract these bits from data
+        nCur = np.int64(nCur)
         dataMask = ((1 << nCur) - 1) << (BYTESIZE - self.iBit - nCur)
         # extract the bit pattern
         dataMask &= self.data[
@@ -129,7 +130,7 @@ class PackedBits:
         ]  # now it has nCur bits from data starting at iBit
         # shift to right location for info
         if bitsLeft > BYTESIZE - self.iBit:
-            infoMask = dataMask << (bitsLeft - BYTESIZE + self.iBit)
+            infoMask = dataMask << (bitsLeft + self.iBit - BYTESIZE)
         else:
             infoMask = dataMask >> (BYTESIZE - self.iBit - bitsLeft)
         # put it into info
