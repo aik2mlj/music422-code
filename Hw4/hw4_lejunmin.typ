@@ -10,10 +10,11 @@
   subproblems: "1.a.i)",
 )
 
+The code for the plots and the tables is in `plots.ipynb`.
+
 =
 #counter(heading).step(level: 2)
 ==
-The code for the plot and the table is in `plots.ipynb`.
 
 #figure(
   image("assets/1b.png", width: 80%),
@@ -80,4 +81,25 @@ In the `ScaleFactorBands` object,
 
 ==
 The obtained `SMR`s are:\
-`[ 12.394  10.35   -0.095   6.008   8.09   -8.031   3.634  10.989 -21.815 -42.281 -33.377 -19.488 -10.014  -5.758  -4.118  -4.223 -31.227  -3.837 8.855 -51.302 -46.144   6.508 -62.257 -57.486 -87.364]`
+#figure(
+  caption: [The obtained SMRs in each critical band.],
+  table(
+    columns: (auto,) * 8,
+    [*Critical Band*], [0], [1], [2], [3], [4], [5], [6],
+    [*SMR (dB)*], [ 12.394 ], [ 10.35 ], [ -0.095 ], [ 6.008], [ 8.09], [ -8.031], [ 3.634],
+    [*Critical Band*], [7],[8], [9], [10], [11], [12], [13],
+    [*SMR (dB)*], [ 10.989], [ -21.815], [ -42.281], [ -33.377], [ -19.488], [ -10.014], [ -5.758],
+    [*Critical Band*], [14], [15],[16], [17], [18], [19], [20],
+    [*SMR (dB)*] , [ -4.118], [ -4.223], [ -31.227], [ -3.837], [ 8.855], [ -51.302], [ -46.144],
+    [*Critical Band*], [21], [22], [23], [24], [], [], [],
+    [*SMR (dB)*] , [ 6.508], [ -62.257], [ -57.486], [ -87.364],
+  ),
+)
+
+I implemented both tonal and noise masker detection according to Chapter 11.5.2 in the textbook (see `indentifyMaskers` in `psychoac.py`). However, the noise masker is turned off during the SMR calculation for the coherence with 1.e.
+
+==
+I tested the given `HW_Test_File.wav`, `oboe.wav`, and `spfe.wav` (speech-female-english). My discoveries are:
+- The current compression ratio is around 6.2 : 1. The encoding takes most of the time. It roughly takes 3 seconds to encode 1 second of the input audio on my laptop.
+- The overall compressed quality for highly tonal audio files is great. I can barely tell the difference. `HW_Test-File` yields near-perfect reconstruction. For `oboe.wav`, the codec mildly muffles the sound of button pressing, but the main part remains identically clear.
+- The compressed quality for human speech is not good. I can hear the "metallic" speech reverberation artifact, and sometimes there is a multichannel artifact (stereo imaging). Generally, the current codec isn't good at capturing short-term transient sounds.

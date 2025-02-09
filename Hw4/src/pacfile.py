@@ -434,14 +434,14 @@ if __name__ == "__main__":
             print(
                 "\n\tEncoding input PCM file...",
             )
-            inFile = PCMFile("input.wav")
-            outFile = PACFile("coded.pac")
+            inFile = PCMFile("../audio/oboe-trim.wav")
+            outFile = PACFile("../audio/coded.pac")
         else:  # "Decode"
             print(
                 "\n\tDecoding coded PAC file...",
             )
-            inFile = PACFile("coded.pac")
-            outFile = PCMFile("output.wav")
+            inFile = PACFile("../audio/coded.pac")
+            outFile = PCMFile("../audio/output.wav")
         # only difference is file names and type of AudioFile object
 
         # open input file

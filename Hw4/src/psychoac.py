@@ -30,7 +30,7 @@ def SPL(intensity):
     Returns the SPL corresponding to intensity
     """
     # This does not take care of the 2/N in MDCT
-    return np.maximum(96 + 10.0 * np.log10(intensity), -30.0)
+    return np.maximum(96 + 10.0 * np.log10(intensity + np.finfo(float).eps), -30.0)
 
 
 def Intensity(spl):
