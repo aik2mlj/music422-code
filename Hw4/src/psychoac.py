@@ -7,7 +7,22 @@ psychoac.py -- masking models implementation
 """
 
 import numpy as np
-from window import *
+import scipy
+from window import HanningWindow, KBDWindow, SineWindow
+from quantize import ScaleFactor
+
+
+def intensity_from_DFT(X, gain_window=3 / 8):
+    # get the intensity from a DFT result
+    # window defaults to hanning window
+    N = len(X)
+    return 4.0 / (N * N * gain_window) * np.pow(np.abs(X), 2)
+
+
+def intensity_from_MDCT(X, gain_window=1 / 2):
+    # get the intensity from a MDCT result
+    # window defaults to sine / KBD window
+    return 2.0 / (gain_window) * np.pow(np.abs(X), 2)
 
 
 def SPL(intensity):
@@ -134,6 +149,61 @@ class ScaleFactorBands:
         assert (self.nLines == self.upperLine - self.lowerLine + 1).any()
 
 
+def identifyMaskers(data, sampleRate, sfBands):
+    """
+    Identify the maskers from given time-domain samples data
+    return: (tonal_maskers, noise_maskers), each a `np.array` of (frequency, intensity)
+    """
+    N = len(data)
+    # Hanning window first
+    data_windowed = HanningWindow(data)
+    # FFT
+    spectrum = scipy.fft.rfft(data_windowed)[:-1]
+    freqs = np.arange(N // 2) / N * sampleRate
+
+    # get intensity & SPL
+    intensity = intensity_from_DFT(spectrum)
+
+    # get peak indices where potentially tonal maskers locate
+    peak_indices = scipy.signal.argrelextrema(intensity, np.greater, order=1)[0]
+    # peak_indices = [i for i in peak_indices if intensity[i] > np.mean(intensity)]
+
+    # get tonal maskers
+    tonal_maskers = []
+    for p in peak_indices:
+        # aggregate the intensity values across the peak
+        intensity_agg = intensity[p - 1] + intensity[p] + intensity[p + 1]
+        # center of mass interpolation for peak frequency estimation
+        freq_peak = (
+            sampleRate
+            / N
+            * (
+                (p - 1) * intensity[p - 1]
+                + p * intensity[p]
+                + (p + 1) * intensity[p + 1]
+            )
+            / intensity_agg
+        )
+        tonal_maskers.append((freq_peak, intensity_agg))
+
+    # get noise maskers: within each critical band, sum up the intensity excluding the tonal ones.
+    noise_maskers = []
+    for lower_l, upper_l in zip(sfBands.lowerLine, sfBands.upperLine):
+        noise_indices = np.arange(lower_l, upper_l + 1)
+        # remove tonal indices from the noise indices
+        for peak in peak_indices:
+            noise_indices = noise_indices[noise_indices != peak]
+        if len(noise_indices) == 0:
+            continue
+        # sum up the intensity
+        noise_intensity = np.sum(intensity[noise_indices])
+        # the center frequency is the geometric mean of this critical band
+        noise_freq = np.exp(np.mean(np.log(np.maximum(1, freqs[noise_indices]))))
+        noise_maskers.append((noise_freq, noise_intensity))
+
+    return tonal_maskers, noise_maskers
+
+
 def getMaskedThreshold(data, MDCTdata, MDCTscale, sampleRate, sfBands):
     """
     Return Masked Threshold evaluated at MDCT lines.
@@ -141,7 +211,27 @@ def getMaskedThreshold(data, MDCTdata, MDCTscale, sampleRate, sfBands):
     Used by CalcSMR, but can also be called from outside this module, which may
     be helpful when debugging the bit allocation code.
     """
-    return np.zeros_like(0)  # TO REPLACE WITH YOUR CODE
+    N = len(data)
+    # indentify the maskers
+    tonal_maskers, noise_maskers = identifyMaskers(data, sampleRate, sfBands)
+    freqs = np.arange(N // 2) / N * sampleRate
+    # combine all the masking curves and threshold in quiet to get the masked threshold
+    quiet_thresh = Thresh(freqs)
+    masked_thresh = quiet_thresh
+    for tm_f, tm_intensity in tonal_maskers:
+        tm_spl = SPL(tm_intensity)
+        masker = Masker(tm_f, tm_spl, isTonal=True)
+        masker_intensity = masker.vIntensityAtFreq(freqs)
+        masking_curve = SPL(masker_intensity)
+        masked_thresh = np.maximum(masked_thresh, masking_curve)  # alpha=inf
+    # for debug purpose, do not use noise maskers
+    # for ns_f, ns_intensity in noise_maskers:
+    #     ns_spl = SPL(ns_intensity)
+    #     masker = Masker(ns_f, ns_spl, isTonal=False)
+    #     masker_intensity = masker.vIntensityAtFreq(freqs)
+    #     masking_curve = SPL(masker_intensity)
+    #     masked_thresh = np.maximum(masked_thresh, masking_curve)  # alpha=inf
+    return masked_thresh
 
 
 def CalcSMRs(data, MDCTdata, MDCTscale, sampleRate, sfBands):
@@ -170,7 +260,16 @@ def CalcSMRs(data, MDCTdata, MDCTscale, sampleRate, sfBands):
                                 Then determines the maximum signal-to-mask ratio within
                 each critical band and returns that result in the SMR[] array.
     """
-    return np.zeros_like(0)  # TO REPLACE WITH YOUR CODE
+    masked_thresh = getMaskedThreshold(data, MDCTdata, MDCTscale, sampleRate, sfBands)
+    MDCTdata_origin = MDCTdata / (2**MDCTscale)
+    MDCTspl = SPL(intensity_from_MDCT(MDCTdata_origin))
+    SMR_all = MDCTspl - masked_thresh
+    # record the maximum SMR in each sfBand
+    SMRs = []
+    for lower_l, upper_l in zip(sfBands.lowerLine, sfBands.upperLine):
+        SMR_max = np.max(SMR_all[lower_l : upper_l + 1])
+        SMRs.append(SMR_max)
+    return np.array(SMRs)
 
 
 # -----------------------------------------------------------------------------
