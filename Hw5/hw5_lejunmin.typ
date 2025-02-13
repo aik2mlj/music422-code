@@ -92,4 +92,22 @@ $
   R_"line" = R_"mt" / (N\/2) = 2.268 "bits/line"
 $
 
+==
 
+=== The uniform mantissa bit allocation:
+`[3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2]`\
+In total: 1161 bits.
+
+=== The constant noise floor bit allocation:
+`[13 16 14 15 15 12 11 14  8  3  2  2  2  0  0  0  0 10 12  0  0 11  0  0 0]`\
+In total: 1152 bits.
+
+=== The constant NMR bit allocation:
+`[10 11  8  9 10  8  8 10  5  2  3  4  6  7  8  6  0  8 10  0  0 10  0  0 0]`\
+In total: 1153 bits.
+
+
+#figure(
+  image("assets/1c.png", width: 90%),
+  caption: [The MDCT, masked threshold, and noise floors for different bit allocation strategies.],
+) <fig-1c>
