@@ -15,7 +15,8 @@ def BitAllocUniform(bitBudget, maxMantBits, nBands, nLines, SMR=None):
     gives the allocation of mantissa bits in each scale factor band when
     bits are uniformly distributed for the mantissas.
     """
-    return 8 * np.ones(nBands, dtype=np.int)  # TO REPLACE WITH YOUR VECTOR
+    return np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2])  # fmt:off
+    return np.array([4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3])  # fmt:off
 
 
 def BitAllocConstSNR(bitBudget, maxMantBits, nBands, nLines, peakSPL):
@@ -26,7 +27,8 @@ def BitAllocConstSNR(bitBudget, maxMantBits, nBands, nLines, peakSPL):
     quantization noise floor (assuming a noise floor 6 dB per bit below
     the peak SPL line in the scale factor band).
     """
-    return 8 * np.ones(nBands, dtype=np.int)  # TO REPLACE WITH YOUR VECTOR
+    # return np.array([13, 16, 14, 15, 15, 12, 11, 14,  8,  3,  2,  2,  2,  0,  0,  0,  0, 10, 12,  0,  0, 11,  0,  0,  0])  # fmt:off
+    return np.array([16, 16, 16, 16, 16, 15, 14, 16, 11,  6,  4,  4,  5,  4,  4,  3,  3, 14, 16,  2,  2, 14,  2,  0,  0])  # fmt:off
 
 
 def BitAllocConstNMR(bitBudget, maxMantBits, nBands, nLines, SMR):
@@ -38,7 +40,8 @@ def BitAllocConstNMR(bitBudget, maxMantBits, nBands, nLines, SMR):
     masked threshold curve (assuming a quantization noise floor 6 dB per
     bit below the peak SPL line in the scale factor band).
     """
-    return 8 * np.ones(nBands, dtype=np.int)  # TO REPLACE WITH YOUR VECTOR
+    # return np.array([10, 11,  8,  9, 10,  8,  8, 10,  5,  2,  3,  4,  6,  7,  8,  6,  0,  8, 10,  0,  0, 10,  0,  0,  0])  # fmt:off
+    return np.array([13, 14, 11, 13, 13, 11, 12, 13,  8,  5,  6,  8,  9, 10, 11,  9,  5, 11, 13,  2,  3, 12,  2,  0,  0])  # fmt:off
 
 
 # Question 2.a)
@@ -58,7 +61,7 @@ def BitAlloc(bitBudget, maxMantBits, nBands, nLines, SMR):
 
 
     """
-    return 8 * np.ones(nBands, dtype=np.int)  # TO REPLACE WITH YOUR CODE
+    return BitAllocConstNMR(bitBudget, maxMantBits, nBands, nLines, SMR)
 
 
 # -----------------------------------------------------------------------------

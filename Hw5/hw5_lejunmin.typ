@@ -111,3 +111,28 @@ In total: 1153 bits.
   image("assets/1c.png", width: 90%),
   caption: [The MDCT, masked threshold, and noise floors for different bit allocation strategies.],
 ) <fig-1c>
+
+==
+
+=== The uniform mantissa bit allocation:
+`[4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 3 3]`
+\ In total: 1792
+
+=== The constant noise floor bit allocation:
+`[16 16 16 16 16 15 14 16 11  6  4  4  5  4  4  3  3 14 16  2  2 14  2  0 0]`
+\ In total: 1838
+
+=== The constant NMR bit allocation:
+`[13 14 11 13 13 11 12 13  8  5  6  8  9 10 11  9  5 11 13  2  3 12  2  0 0]`
+\ In total: 1839
+
+
+#figure(
+  image("assets/1d.png", width: 90%),
+  caption: [The MDCT, masked threshold, and noise floors for different bit allocation strategies.],
+) <fig-1d>
+
+==
+Among the 6 conditions (128 vs 192 kb/s/ch, 3 bit allocation strategies),
+- The uniform bit allocation strategy yields pretty bad output result, the one with 192 kb/s/ch better than the one with 128 kb/s/ch. They have a strong time-domain aliasing artifact.
+- Both the constant SMR and constant NMR bit allocation strategies nicely reconstructed the original audio. For them, it is hard to tell which one is better psychoacousically in both the data rate.
