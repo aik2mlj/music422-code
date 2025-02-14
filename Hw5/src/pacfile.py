@@ -451,10 +451,10 @@ if __name__ == "__main__":
         if Direction == "Encode":
             # set additional parameters that are needed for PAC file
             # (beyond those set by the PCM file on open)
-            codingParams.nMDCTLines = 1024
-            codingParams.nScaleBits = 3
+            codingParams.nMDCTLines = 512
+            codingParams.nScaleBits = 4
             codingParams.nMantSizeBits = 4
-            codingParams.targetBitsPerSample = 2.9
+            codingParams.targetBitsPerSample = 4
             # tell the PCM file how large the block size is
             codingParams.nSamplesPerBlock = codingParams.nMDCTLines
         else:  # "Decode"

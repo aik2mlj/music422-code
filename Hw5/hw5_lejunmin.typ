@@ -136,3 +136,29 @@ In total: 1153 bits.
 Among the 6 conditions (128 vs 192 kb/s/ch, 3 bit allocation strategies),
 - The uniform bit allocation strategy yields pretty bad output result, the one with 192 kb/s/ch better than the one with 128 kb/s/ch. They have a strong time-domain aliasing artifact.
 - Both the constant SMR and constant NMR bit allocation strategies nicely reconstructed the original audio. For them, it is hard to tell which one is better psychoacousically in both the data rate.
+
+=
+==
+See `BitAlloc` in `bitalloc.py`.
+
+I implemented a bisection method that finds the constant distance below the masked threshold, then derives the bit allocation from it. Then, I "sanitize" the bit allocation by removing one bits and allocating the remaining bit budget.
+
+==
+
+#figure(
+  image("assets/2b.png", width: 80%),
+  caption: [The MDCT, masked threshold, and noise floors of two data rates.],
+) <fig-2b>
+
+$
+  "codingParams.targetBitsPerSample" = cases(2.667 quad &I = 128 "kb/s/ch", 4 quad &I = 196 "kb/s/ch")
+$
+Also, I notice that to align with the setting in Problem 1, the following parameters should be set:
+- `codingParams.nMDCTLines = 512`
+- `codingParams.nScaleBits = 4`
+- `codingParams.nMantSizeBits = 4`
+
+I used `HW_Test_File.wav` for the input audio.
+- The initial size is 937.5 KB.
+- The compressed size of 128 kb/s/ch is 160.7 KB, which yields a compression ratio of 5.83 : 1 (close to the theoretical 6 : 1).
+- The compressed size of 192 kb/s/ch is 238.7 KB, which yields a compression ratio of 3.93 : 1 (close to the theoretical 4 : 1).

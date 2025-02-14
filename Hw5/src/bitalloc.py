@@ -61,7 +61,71 @@ def BitAlloc(bitBudget, maxMantBits, nBands, nLines, SMR):
 
 
     """
-    return BitAllocConstNMR(bitBudget, maxMantBits, nBands, nLines, SMR)
+    # return BitAllocConstSNR(bitBudget, maxMantBits, nBands, nLines, SMR)
+    # print(f"bitBudget: {bitBudget}")
+    target_area = bitBudget * 6
+    lo = -1000
+    hi = 1000
+
+    tol = 1e-6  # tolerance for stopping
+    while hi - lo > tol:
+        mid = (lo + hi) / 2  # this is the distance from the masked threshold
+        # Compute the area: sum up (SPL - mid) wherever SPL is above mid.
+        area = np.sum(np.maximum(SMR - mid, 0) * nLines)
+        if area > target_area:
+            lo = mid
+        else:
+            hi = mid
+
+    mid = (lo + hi) / 2
+    # print(mid)
+    mt = (SMR - mid) / 6
+    mt = np.maximum(mt, 0)
+    mt = np.array(np.round(mt, decimals=0), dtype=int)
+    # print(mt)
+
+    for i in range(nBands):
+        if mt[i] > maxMantBits:
+            mt[i] = maxMantBits
+
+    # Ensure the total allocated bits do not exceed the budget
+    totalBits = np.sum(mt * nLines)
+    for i in range(nBands):
+        if mt[i] == 1:
+            if totalBits + nLines[i] <= bitBudget:
+                mt[i] = 2
+                totalBits += nLines[i]
+            else:
+                mt[i] = 0
+                totalBits -= nLines[i]
+    for i in range(nBands):
+        if mt[i] == 0:
+            if totalBits + 2 * nLines[i] <= bitBudget:
+                mt[i] = 2
+                totalBits += 2 * nLines[i]
+
+    if totalBits > bitBudget:
+        for i in reversed(range(nBands)):
+            if mt[i] > 2:
+                mt[i] -= 1
+                totalBits -= nLines[i]
+            if totalBits <= bitBudget:
+                break
+
+    if totalBits < bitBudget:
+        for i in range(nBands):
+            if (
+                mt[i] != 0
+                and mt[i] < maxMantBits
+                and totalBits + nLines[i] <= bitBudget
+            ):
+                mt[i] += 1
+                totalBits += nLines[i]
+    # print(mt)
+    # print(totalBits)
+    assert totalBits <= bitBudget
+
+    return mt
 
 
 # -----------------------------------------------------------------------------
