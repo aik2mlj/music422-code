@@ -434,14 +434,14 @@ if __name__ == "__main__":
             print(
                 "\n\tEncoding input PCM file...",
             )
-            inFile = PCMFile("../audio/test.wav")
-            outFile = PACFile("../audio/coded.pac")
+            inFile = PCMFile("../audio/spgm.wav")
+            outFile = PACFile("../audio/coded/coded.pac")
         else:  # "Decode"
             print(
                 "\n\tDecoding coded PAC file...",
             )
-            inFile = PACFile("../audio/coded.pac")
-            outFile = PCMFile("../audio/test-output.wav")
+            inFile = PACFile("../audio/coded/coded.pac")
+            outFile = PCMFile("../audio/coded/spgm.wav")
         # only difference is file names and type of AudioFile object
 
         # open input file
@@ -454,7 +454,7 @@ if __name__ == "__main__":
             codingParams.nMDCTLines = 512
             codingParams.nScaleBits = 4
             codingParams.nMantSizeBits = 4
-            codingParams.targetBitsPerSample = 4
+            codingParams.targetBitsPerSample = 2.667
             # tell the PCM file how large the block size is
             codingParams.nSamplesPerBlock = codingParams.nMDCTLines
         else:  # "Decode"

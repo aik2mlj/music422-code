@@ -145,6 +145,14 @@ I implemented a bisection method that finds the constant distance below the mask
 
 ==
 
+- With data rate of 128 kb/s/ch, the bit allocation:
+`[11 11  9 10  9  7  9 10  5  2  3  5  6  7  7  7  3  8 10  0  0  9  0  0 0]`
+\ In total: 1160.
+
+- With data rate of 192 kb/s/ch, the bit allocation:
+`[14 13 11 12 12 10 12 13  7  4  5  8  9 10 10 10  6 10 12  2  3 12  0  2 0]`
+\ In total: 1843.
+
 #figure(
   image("assets/2b.png", width: 80%),
   caption: [The MDCT, masked threshold, and noise floors of two data rates.],
@@ -162,3 +170,28 @@ I used `HW_Test_File.wav` for the input audio.
 - The initial size is 937.5 KB.
 - The compressed size of 128 kb/s/ch is 160.7 KB, which yields a compression ratio of 5.83 : 1 (close to the theoretical 6 : 1).
 - The compressed size of 192 kb/s/ch is 238.7 KB, which yields a compression ratio of 3.93 : 1 (close to the theoretical 4 : 1).
+
+==
+The main tweaking I tried is to add noise maskers to the SMR calculation. Under the data rate of 128 kb/s/ch (`targetBitsPerSample=2.667`), I tested `castanet.wav`, `harpsichord.wav`, `spgm.wav`.
+
+With `harpsichord.wav`, the difference isn't noticeable. But with `castanet.wav` and `spgm.wav`, adding noise maskers to the SMR calculation yields less artifacts (though subtle). Without noise maskers, the artifacts are more "harmonic", which is especially unnatural with speech.
+
+==
+
+1. *Pre-Echo*
+  - Most noticeable in transient-rich sounds, especially the **castanet** and **harpsichord** excerpts.
+  - At lower bit rates, the compression algorithm fails to allocate enough bits to short transients, causing a **smearing effect** before the actual attack of the sound.
+
+2. *Aliasing*
+  - More prominent in high-frequency content, particularly in **harpsichord** recordings.
+  - At lower bit rates, aliasing manifests as an unnatural, harsh distortion in the upper harmonics. This might be due to the aggressive quantization of high-frequency components when using a psychoacoustic model.
+
+3. *"Birdies"*
+  - Most evident in sustained harmonic sounds like **the harpsichord**.
+  - Appears as artificial, high-frequency warbling or chirping noises that sound unnatural. These arise due to quantization noise and imperfect reconstruction of spectral components.
+
+4. *Speech Reverberation ("Metallic" Sound)*
+  - Clearly noticeable in the **German male speaker** recording at low bit rates. Sounds robotic and unnatural, with a metallic or hollow resonance.
+
+5. *Multichannel Artifacts (Stereo Imaging Issues)*
+  - Mono sounds become somewhat stereo. Elements shift unnaturally within the stereo field.
