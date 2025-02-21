@@ -89,9 +89,7 @@ class TestQuantize(unittest.TestCase):
         for sub_xs in self.xs.reshape(-1, N):
             maxMagnitude = np.max(np.abs(sub_xs))
             scale = ScaleFactor(maxMagnitude)
-            np.testing.assert_equal(
-                vMantissa(sub_xs, scale), quantize.vMantissa(sub_xs, scale)
-            )
+            np.testing.assert_equal(vMantissa(sub_xs, scale), quantize.vMantissa(sub_xs, scale))
 
     def test_vDequantize(self):
         N = 4

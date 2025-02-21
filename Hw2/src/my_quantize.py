@@ -252,9 +252,7 @@ def vDequantize(scale, mantissaVec, nScaleBits=3, nMantBits=5):
     if scale == maxScale:
         aQuantizedNumVec |= mantissaVec & codeBits_getter
     else:
-        aQuantizedNumVec |= (mantissaVec & codeBits_getter) << (
-            nBits - scale - nMantBits
-        )
+        aQuantizedNumVec |= (mantissaVec & codeBits_getter) << (nBits - scale - nMantBits)
         if maxScale - scale - 1 >= 0:
             aQuantizedNumVec = np.where(
                 mantissaVec & codeBits_getter,

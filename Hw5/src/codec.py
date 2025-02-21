@@ -85,15 +85,11 @@ def EncodeSingleChannel(data, codingParams):
     #    vMantissa = np.vectorize(Mantissa)
 
     # compute target mantissa bit budget for this block of halfN MDCT mantissas
-    bitBudget = (
-        codingParams.targetBitsPerSample * halfN
-    )  # this is overall target bit rate
+    bitBudget = codingParams.targetBitsPerSample * halfN  # this is overall target bit rate
     bitBudget -= nScaleBits * (
         sfBands.nBands + 1
     )  # less scale factor bits (including overall scale factor)
-    bitBudget -= (
-        codingParams.nMantSizeBits * sfBands.nBands
-    )  # less mantissa bit allocation bits
+    bitBudget -= codingParams.nMantSizeBits * sfBands.nBands  # less mantissa bit allocation bits
 
     # window data for side chain FFT and also window and compute MDCT
     timeSamples = data
@@ -102,16 +98,12 @@ def EncodeSingleChannel(data, codingParams):
 
     # compute overall scale factor for this block and boost mdctLines using it
     maxLine = np.max(np.abs(mdctLines))
-    overallScale = ScaleFactor(
-        maxLine, nScaleBits
-    )  # leading zeroes don't depend on nMantBits
+    overallScale = ScaleFactor(maxLine, nScaleBits)  # leading zeroes don't depend on nMantBits
     mdctLines *= 1 << overallScale
 
     # compute the mantissa bit allocations
     # compute SMRs in side chain FFT
-    SMRs = CalcSMRs(
-        timeSamples, mdctLines, overallScale, codingParams.sampleRate, sfBands
-    )
+    SMRs = CalcSMRs(timeSamples, mdctLines, overallScale, codingParams.sampleRate, sfBands)
     # perform bit allocation using SMR results
     bitAlloc = BitAlloc(bitBudget, maxMantBits, sfBands.nBands, sfBands.nLines, SMRs)
 
@@ -120,9 +112,7 @@ def EncodeSingleChannel(data, codingParams):
     nMant = halfN
     for iBand in range(sfBands.nBands):
         if not bitAlloc[iBand]:
-            nMant -= sfBands.nLines[
-                iBand
-            ]  # account for mantissas not being transmitted
+            nMant -= sfBands.nLines[iBand]  # account for mantissas not being transmitted
     mantissa = np.empty(nMant, dtype=np.int32)
     iMant = 0
     for iBand in range(sfBands.nBands):

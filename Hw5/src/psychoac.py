@@ -177,11 +177,7 @@ def identifyMaskers(data, sampleRate, sfBands):
         freq_peak = (
             sampleRate
             / N
-            * (
-                (p - 1) * intensity[p - 1]
-                + p * intensity[p]
-                + (p + 1) * intensity[p + 1]
-            )
+            * ((p - 1) * intensity[p - 1] + p * intensity[p] + (p + 1) * intensity[p + 1])
             / intensity_agg
         )
         tonal_maskers.append((freq_peak, intensity_agg))

@@ -58,9 +58,7 @@ def KBDWindow(dataSampleArray, alpha=4.0):
     N = len(dataSampleArray)
     N_half = N // 2
     numerator = (
-        np.pi
-        * alpha
-        * np.sqrt(1.0 - np.pow((2 * np.arange(N_half + 1)) / (N_half + 1) - 1, 2))
+        np.pi * alpha * np.sqrt(1.0 - np.pow((2 * np.arange(N_half + 1)) / (N_half + 1) - 1, 2))
     )
     numerator = scipy.special.i0(numerator)
     denominator = scipy.special.i0(np.pi * alpha)

@@ -1,7 +1,5 @@
-
-
 """
-Music 422 
+Music 422
 
 Plotting tool for BS.1116 Test Results
 
@@ -10,19 +8,20 @@ Plotting tool for BS.1116 Test Results
  © 2009-25 Marina Bosi -- All rights reserved
 -----------------------------------------------------------------------
 """
+
 import matplotlib.pyplot as plt
 from sdgplot import plotSDG
 
 
 dirs = [
-    'castanets/',
-    'glockenspiel/',
-    'harpsichord/',
-    'spgm/',
+    "castanets/",
+    "glockenspiel/",
+    "harpsichord/",
+    "spgm/",
 ]
 # Plot 128kbps
-fig128, ax128 = plotSDG(dirs, '128kbps')
+fig128, ax128 = plotSDG(dirs, "128kbps")
 plt.show()
 # Plot 192kbps
-fig192, ax192 = plotSDG(dirs, '192kbps')
+fig192, ax192 = plotSDG(dirs, "192kbps")
 plt.show()

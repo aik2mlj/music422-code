@@ -114,11 +114,7 @@ def BitAlloc(bitBudget, maxMantBits, nBands, nLines, SMR):
 
     if totalBits < bitBudget:
         for i in range(nBands):
-            if (
-                mt[i] != 0
-                and mt[i] < maxMantBits
-                and totalBits + nLines[i] <= bitBudget
-            ):
+            if mt[i] != 0 and mt[i] < maxMantBits and totalBits + nLines[i] <= bitBudget:
                 mt[i] += 1
                 totalBits += nLines[i]
     # print(mt)

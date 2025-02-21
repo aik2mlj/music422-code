@@ -53,8 +53,7 @@ def floatPoint_quantize(inFile, codingParams):
         for iCh in range(codingParams.nChannels):
             # data[iCh]: (1024,)
             data_fpq[iCh] = [
-                DequantizeFP(ScaleFactor(x), MantissaFP(x, ScaleFactor(x)))
-                for x in data[iCh]
+                DequantizeFP(ScaleFactor(x), MantissaFP(x, ScaleFactor(x))) for x in data[iCh]
             ]
 
         outFile_fpq.WriteDataBlock(data_fpq, codingParams)

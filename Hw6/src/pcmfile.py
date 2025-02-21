@@ -49,9 +49,7 @@ class PCMFile(AudioFile):
             if tag[0:4] == b"fmt ":
                 break
         # found format chunk, read its data
-        tag = self.fp.read(
-            20
-        )  # should be size of basic format chunk (following 'fmt ' header)
+        tag = self.fp.read(20)  # should be size of basic format chunk (following 'fmt ' header)
         (
             formatSize,
             formatTag,
@@ -71,9 +69,7 @@ class PCMFile(AudioFile):
             # get up to 4 bytes to compare with "data"
             new_bytes = self.fp.read(to_read)
             if len(new_bytes) < to_read:
-                raise RuntimeError(
-                    "Didn't find WAV file 'data' chunk following 'fmt ' chunk"
-                )
+                raise RuntimeError("Didn't find WAV file 'data' chunk following 'fmt ' chunk")
             if to_read == 4:
                 tag = new_bytes[0:4]
             else:
@@ -106,9 +102,7 @@ class PCMFile(AudioFile):
             bitsPerSample  # bits per audio sample (only 16 currently supported)
         )
         myParams.sampleRate = sampleRate  # sample rate in Hz (e.g. 44100.)
-        myParams.numSamples = (
-            numSamples  # total number of samples in file (per channel)
-        )
+        myParams.numSamples = numSamples  # total number of samples in file (per channel)
         myParams.bytesReadSoFar = 0
         return myParams
 
@@ -144,9 +138,7 @@ class PCMFile(AudioFile):
         else:
             dataBlock = self.fp.read(bytesToRead)
         codingParams.bytesReadSoFar += bytesToRead
-        if (
-            dataBlock and len(dataBlock) < bytesToRead
-        ):  # got data but not as much as expected
+        if dataBlock and len(dataBlock) < bytesToRead:  # got data but not as much as expected
             # this was a partial block, zero pad
             dataBlock += (bytesToRead - len(dataBlock)) * b"\0"
         elif not dataBlock:
@@ -155,9 +147,7 @@ class PCMFile(AudioFile):
         if codingParams.bitsPerSample == 16:
             # Uses '<h' format code in struct to convert little-endian pairs of bits into short integers
             dataBlock = unpack(
-                b"<"
-                + str(codingParams.nSamplesPerBlock * codingParams.nChannels).encode()
-                + b"h",
+                b"<" + str(codingParams.nSamplesPerBlock * codingParams.nChannels).encode() + b"h",
                 dataBlock,
             )  # asumes nSamples*nChannels SIGNED short ints
         #            dataBlock=np.fromstring(dataBlock,dtype=np.int16)  # uses Local Endian conversion -- use byteswap() method if wrong Endian
@@ -220,9 +210,7 @@ class PCMFile(AudioFile):
         # get information about the block to write
         nChannels = len(data)
         if nChannels != codingParams.nChannels:
-            raise RuntimeError(
-                "Data block to PCMFile did not have expected number of channels"
-            )
+            raise RuntimeError("Data block to PCMFile did not have expected number of channels")
         nSamples = min(
             [len(data[iCh]) for iCh in range(nChannels)]
         )  # use shortest length of channel data for nSamples
@@ -242,14 +230,8 @@ class PCMFile(AudioFile):
             temp[signs] *= -1  # now quantization code has 2s complement sign attached
             codes.append(temp)  # codes[iCh]
         # interleave the codes to be written out (because that's the WAV format)
-        dataBlock = [
-            codes[iCh][iSample]
-            for iSample in range(nSamples)
-            for iCh in range(nChannels)
-        ]
-        dataBlock = np.asarray(
-            dataBlock, dtype=np.int16
-        )  # notice that this is SIGNED 16-bit int
+        dataBlock = [codes[iCh][iSample] for iSample in range(nSamples) for iCh in range(nChannels)]
+        dataBlock = np.asarray(dataBlock, dtype=np.int16)  # notice that this is SIGNED 16-bit int
         # pack the interleaved codes into a block of bytes
         if codingParams.bitsPerSample == 16:
             # Uses '<h' format code in struct to convert short integers into little-endian pairs of bytes

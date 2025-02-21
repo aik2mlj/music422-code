@@ -1,6 +1,6 @@
 """
-Music 422 
-SDGPLOT.py - 
+Music 422
+SDGPLOT.py -
 Plotting tool for BS.1116 Test Results
 
 Required file structure
@@ -23,13 +23,15 @@ plt.show()
 -----------------------------------------------------------------------
 
 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 import csv, itertools, os, re
 
+
 def parseCsv(fname):
     """
-    PARSECSV - reads the SGD csv file and saves it as a dictionary. 
+    PARSECSV - reads the SGD csv file and saves it as a dictionary.
     Trusts that the format of the CSV is correct
     """
     with open(fname, "r") as files:
@@ -43,9 +45,10 @@ def parseCsv(fname):
             values.append([float(data[1])])
     return dict(zip(keys, values))
 
+
 def loadSdgCsvs(dir):
     """
-    LOADSDGCSVS - loads all CSV files in a director. 
+    LOADSDGCSVS - loads all CSV files in a director.
     Trusts that format of CSVs are correct
     args:
     dir - string, directory name. Example : 'dir/'
@@ -62,7 +65,7 @@ def loadSdgCsvs(dir):
     for k in appDict.keys():
         for i in range(1, len(dicts)):
             appDict[k].append(dicts[i][k][0])
-    
+
     # Now we're going to rename the keys
     # And strip the filenames
     filename = re.search(r"(.*?)(?=_)", list(appDict.keys())[0]).group()
@@ -76,8 +79,9 @@ def loadSdgCsvs(dir):
 
     for i in range(len(kOld)):
         appDict[kNew[i]] = appDict.pop(kOld[i])
-    appDict['filename'] = filename
+    appDict["filename"] = filename
     return appDict
+
 
 def plotSDG(dirs, key):
     """
@@ -90,10 +94,10 @@ def plotSDG(dirs, key):
     sample = []
     # Load All CSVs and print for debugging
     for d in dirs:
-        #for debugging
-        print("\n\n"+ d+  "\n")
+        # for debugging
+        print("\n\n" + d + "\n")
         sample.append(loadSdgCsvs(d))
-     
+
     # # add overall results to sample results
     # totalKeys = sample[0].keys()
     # totals = dict().fromkeys(totalKeys)
@@ -101,49 +105,49 @@ def plotSDG(dirs, key):
     # for k in list(totalKeys)[:-1]:
     #     vals = [item for s in sample for item in s[k]]
     #     totals[k] = vals
-    # sample.append(totals)   
- 
+    # sample.append(totals)
+
     nSamples = len(sample)
-   
+
     # Plotting code
     fig, ax = plt.subplots()
-    width = 0.35 # Looks good
-    labels = [sample[i]['filename'] for i in range(nSamples)]
+    width = 0.35  # Looks good
+    labels = [sample[i]["filename"] for i in range(nSamples)]
     x = np.arange(nSamples + 1)
 
     # Get barHeigh, barBottom, and barMeans
     barHeight = [np.abs(np.amax(sample[i][key]) - np.amin(sample[i][key])) for i in range(nSamples)]
     barBottom = [np.amin(sample[i][key]) for i in range(nSamples)]
     barMeans = [np.mean(sample[i][key]) for i in range(nSamples)]
-    Height = np.abs( np.amin(barMeans) - np.max(barMeans))
+    Height = np.abs(np.amin(barMeans) - np.max(barMeans))
     Bottom = np.amin(barMeans)
     Mean = np.mean(barMeans)
-    
-    #for debugging
+
+    # for debugging
     print()
-    print("barMeans",barMeans)
-    print("Height",Height)
-    print("Bottom",Bottom)
-    print("Mean",Mean)
+    print("barMeans", barMeans)
+    print("Height", Height)
+    print("Bottom", Bottom)
+    print("Mean", Mean)
 
     # # Add the overall
-    labels.append('Overall')
-    barHeight.append(Height )
+    labels.append("Overall")
+    barHeight.append(Height)
     barBottom.append(Bottom)
     barMeans.append(Mean)
 
-
     # Define our rectangles
-    rects = ax.bar(x+width, barHeight, width, barBottom, color='0.75', edgecolor='k', linewidth=1.5)
-    ax.hlines(barMeans, x+width/2, x+3*width/2, colors='k', linewidth=2)
-    ax.axhline(0.0, lw='1.5', c='k')
-    ax.set(
-        ylabel = 'SDG',
-        title = '{}'.format(key),
-        yticks = np.arange(-4, 1.5, 0.5),
-        xticks = x + width,
-        xticklabels = labels
+    rects = ax.bar(
+        x + width, barHeight, width, barBottom, color="0.75", edgecolor="k", linewidth=1.5
     )
-    ax.grid('True', axis='y', ls=':')
+    ax.hlines(barMeans, x + width / 2, x + 3 * width / 2, colors="k", linewidth=2)
+    ax.axhline(0.0, lw="1.5", c="k")
+    ax.set(
+        ylabel="SDG",
+        title="{}".format(key),
+        yticks=np.arange(-4, 1.5, 0.5),
+        xticks=x + width,
+        xticklabels=labels,
+    )
+    ax.grid("True", axis="y", ls=":")
     return fig, ax
-

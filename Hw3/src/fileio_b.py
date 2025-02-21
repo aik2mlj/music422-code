@@ -106,9 +106,7 @@ def overlapAndAdd_coding(inFile_path, N, use_mdct=True, quant_type=None):
             # 2.a) c. window again
             data_rewindowed = SineWindow(data_prime)
             # 2.a) d. add the left half to overlapAndAdd (save the right half)
-            result = (
-                overlapAndAdd[iCh] + data_rewindowed[: codingParams.nSamplesPerBlock]
-            )
+            result = overlapAndAdd[iCh] + data_rewindowed[: codingParams.nSamplesPerBlock]
             overlapAndAdd[iCh] = data_rewindowed[codingParams.nSamplesPerBlock :]
             # 2.a) e. set data to the result
             data[iCh] = result

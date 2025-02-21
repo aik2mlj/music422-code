@@ -70,9 +70,7 @@ def MDCT(data, a, b, isInverse=False):
         data_pre_twd = data * np.exp(-1j * np.pi * n_array / N)
         data_fft = scipy.fft.fft(data_pre_twd)
         data_post_twd = np.real(
-            (2 / N)
-            * data_fft[: N // 2]
-            * np.exp(-1j * 2 * np.pi * n0 * (k_array + 0.5) / N)
+            (2 / N) * data_fft[: N // 2] * np.exp(-1j * 2 * np.pi * n0 * (k_array + 0.5) / N)
         )
 
     return data_post_twd

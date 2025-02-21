@@ -46,9 +46,7 @@ class PackedBits:
         if nBits < nCur:
             nCur = nBits
         # compute mask to extract this from info
-        infoMask = ((1 << nCur) - 1) << (
-            bitsLeft - nCur
-        )  # nCur ones starting at first bit to read
+        infoMask = ((1 << nCur) - 1) << (bitsLeft - nCur)  # nCur ones starting at first bit to read
         # extract the bit pattern
         infoMask &= info  # now it has nCur bits from info starting at first bit to read
         # shift to right location for current byte
@@ -77,9 +75,7 @@ class PackedBits:
                 bitsLeft - BYTESIZE
             )  # BYTESIZE ones starting at first bit to read
             # extract the bit pattern
-            infoMask &= (
-                info  # now it has BYTESIZE bits from info starting at first bit to read
-            )
+            infoMask &= info  # now it has BYTESIZE bits from info starting at first bit to read
             # shift to right location for current byte
             if bitsLeft > BYTESIZE:
                 dataMask = infoMask >> (bitsLeft - BYTESIZE)
@@ -125,9 +121,7 @@ class PackedBits:
         nCur = np.int64(nCur)
         dataMask = ((1 << nCur) - 1) << (BYTESIZE - self.iBit - nCur)
         # extract the bit pattern
-        dataMask &= self.data[
-            self.iByte
-        ]  # now it has nCur bits from data starting at iBit
+        dataMask &= self.data[self.iByte]  # now it has nCur bits from data starting at iBit
         # shift to right location for info
         if bitsLeft > BYTESIZE - self.iBit:
             infoMask = dataMask << (bitsLeft + self.iBit - BYTESIZE)
@@ -150,9 +144,7 @@ class PackedBits:
         nFull = bitsLeft // BYTESIZE  # this many full bytes
         for iFull in range(nFull):
             # extract bit pattern of full byte
-            dataMask = self.data[
-                self.iByte
-            ]  # now it has nCur bits from data starting at iBit
+            dataMask = self.data[self.iByte]  # now it has nCur bits from data starting at iBit
             # shift to right location for info
             if bitsLeft > BYTESIZE - self.iBit:
                 infoMask = dataMask << (bitsLeft - BYTESIZE)
@@ -171,9 +163,7 @@ class PackedBits:
             # compute mask to extract these last nCur bits from data
             dataMask = ((1 << nCur) - 1) << (BYTESIZE - nCur)  # leftmost nCur ones
             # extract the bit pattern
-            dataMask &= self.data[
-                self.iByte
-            ]  # now it has nCur bits from data starting at iBit
+            dataMask &= self.data[self.iByte]  # now it has nCur bits from data starting at iBit
             # shift to right location for current byte
             if bitsLeft > BYTESIZE - self.iBit:
                 infoMask = dataMask << (bitsLeft - BYTESIZE)
