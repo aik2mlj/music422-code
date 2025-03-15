@@ -1,0 +1,7 @@
+# ITU-R BS.1116-based test
+# Administered on Sat Feb 22 23:10:13 2025
+# Reference file: /Users/ExpectoPartronum/Documents/lejun_test_audio/oboe/oboe.wav
+# Subject name/number: Hanqi
+Test file       ,          SDG, 
+oboe_128kbps.wav,         0.50, 
+oboe_192kbps.wav,        -0.50, 

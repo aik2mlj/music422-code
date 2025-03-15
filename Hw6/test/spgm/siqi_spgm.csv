@@ -1,0 +1,7 @@
+# ITU-R BS.1116-based test
+# Administered on Fri Feb 21 22:15:50 2025
+# Reference file: /Users/sc/Desktop/MUSIC422/lejun_test_audio/spgm/spgm.wav
+# Subject name/number: siqi
+Test file       ,          SDG, 
+spgm_128kbps.wav,        -0.50, 
+spgm_192kbps.wav,        -0.20, 

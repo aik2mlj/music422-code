@@ -1,4 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env -S uv run
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "wxpython",
+# ]
+# ///
 
 """
 ITU-R BS.1116-based Impairment test administer tool

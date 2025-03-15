@@ -1,0 +1,7 @@
+# ITU-R BS.1116-based test
+# Administered on Fri Feb 21 13:03:45 2025
+# Reference file: /user/l/lejun/Personal_decrypt/Stanford/MUSIC422/Hw6/audio/test/spgm/spgm.wav
+# Subject name/number: lejun
+Test file       ,          SDG, 
+spgm_192kbps.wav,         0.10, 
+spgm_128kbps.wav,        -0.20, 

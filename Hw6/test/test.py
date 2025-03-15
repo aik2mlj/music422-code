@@ -18,6 +18,7 @@ dirs = [
     "glockenspiel/",
     "harpsichord/",
     "spgm/",
+    "oboe/",
 ]
 # Plot 128kbps
 fig128, ax128 = plotSDG(dirs, "128kbps")
