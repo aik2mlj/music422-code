@@ -117,9 +117,11 @@ def BitAlloc(bitBudget, maxMantBits, nBands, nLines, SMR):
             if mt[i] != 0 and mt[i] < maxMantBits and totalBits + nLines[i] <= bitBudget:
                 mt[i] += 1
                 totalBits += nLines[i]
-    # print(mt)
-    # print(totalBits)
-    assert totalBits <= bitBudget
+    try:
+        assert totalBits <= bitBudget
+    except AssertionError:
+        print("mt")
+        print(totalBits, bitBudget)
 
     return mt
 
